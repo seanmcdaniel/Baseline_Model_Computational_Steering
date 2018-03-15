@@ -1,0 +1,46 @@
+#!/bin/bash
+date
+
+# Checking output paths
+#mydir="`dirname "$0"`"
+#mydir="`pwd | sed 's/\/home/\/barleyhome/'`"
+mydir=/home/mcdaniel/Software/Baseline_Model_Computational_Steering
+mydirwithtime="$mydir/data-`date "+%Y%m%d-%H%M%S.%N" | cut -b1-19`"
+rm "$mydir/data-nextlatest"
+cp -P "$mydir/data-latest" "$mydir/data-nextlatest" 
+rm "$mydir/data-latest"
+ln -s "$mydirwithtime" "$mydir/data-latest"
+echo "Running in $mydir; writing data to $mydirwithtime"
+if [[ "`find $mydirwithtime -type f 2>/dev/null`" ]]; then
+    echo "Data directory already exists. Wait one second and run this script again."
+    exit
+fi
+if [[ ! -d "$mydirwithtime" ]]; then
+	mkdir -p "$mydirwithtime/connections"
+	mkdir -p "$mydir/data/connections" 2>/dev/null
+fi
+
+# Output log file
+logfile="$mydirwithtime/$(date +%Y%m%d-%H%M).log"
+
+# Echo any notes passed in on the command line to the log file
+echo "Running as $(whoami) at $(date +%Y%m%d-%H%M%S)" >> "$logfile"
+echo "Notes: $@" >> "$logfile"
+
+# Checking node numbers
+# Assumes that Nnodes in Neocortex.g is correct
+export num_nodes="`grep "\sNnodes = " $mydir/Neocortex.g | sed 's/.* = //'`"
+echo "Running on $num_nodes nodes"
+
+# Create snapshot of all Genesis scripts and parameters
+# Use static list of important files and copy to data-latest:
+if [[ "x`git status 2>/dev/null`" != "x" ]]; then
+    git ls-files | grep -v ".gitattributes" > gitfiles.txt
+fi
+mkdir "$mydir/data-latest/scripts"
+tar c -T - < gitfiles.txt | tar x -C "${mydirwithtime}/scripts"
+
+/home/mcdaniel/Software/genesis-2.4/pgenesis/bin/pgenesis -nox -notty -batch $mydir/Neocortex >> "$logfile" 2>&1
+
+mv "$mydir/data/connections/"* "$mydirwithtime/connections/" 2>/dev/null
+
