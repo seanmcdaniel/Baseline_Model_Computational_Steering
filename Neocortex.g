@@ -377,10 +377,6 @@ end
 echo Started running at {getdate}
 randseed {{mynode} + {myrandseed} + 3}
 step_tmax
-//while ({{getstat -time} < tmax}) 
-//	barrierall
-//	step
-//end
 
 echo Finished running at {getdate}
 
