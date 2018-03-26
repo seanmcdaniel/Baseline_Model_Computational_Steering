@@ -373,10 +373,9 @@ if ({{drawtree} == 1})
     include draw_tree.g
 end
 
-// Run the sim to time tmax
-echo Started running at {getdate}
-randseed {{mynode} + {myrandseed} + 3}
-step_tmax
+while({{getstat -time} < tmax})
+    step
+end
 
 echo Finished running at {getdate}
 
