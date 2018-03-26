@@ -1,13 +1,13 @@
 // genesis
 
 //Overall simulation parameters
-float tmax = 0.02
+float tmax = 5.0
 float dt = 5.0e-5		// sec
 floatformat %g
 float refresh_factor = 10.0
 
-float ttest_l = 0.01
-float ttest_h = 0.01005
+float ttest_l = 3
+float ttest_h = 3.00005
 // Number of CPU nodes (= same as number of cortical columns)
 int Nnodes = 4
 int sqrtNnodes = {sqrt {Nnodes}}
@@ -208,6 +208,24 @@ function step_tmax
     step {tmax} -time
 end
 
+function synapse_info(path)
+    str path, src
+    int i
+    float weight, delay
+    floatformat %.3g
+    echo "Hey Sean"
+    for(i = 0; i < {getsyncount {path}}; i = i + 1)
+        echo "Hey Sean in loop"
+        src = {getsynsrc {path} {i}}
+        echo "Hey Sean getting src"
+        weight = {getfield {path} synapse[{i}].weight}
+        echo "Hey Sean getting weight"
+        delay ={getfield {path} synapse[{i}].delay}
+        echo "Hey Sean getting delay"
+        echo synapse[{i}]: \
+            src = {src} weight = {weight} delay = {delay}
+    end
+end
 //===============================
 //          Data Out
 //===============================
@@ -377,7 +395,12 @@ end
 
 while({{getstat -time} < tmax})
     if({{getstat -time} > {ttest_l}} & {{getstat -time} < {ttest_h}})
-        //include sean_netdefs.g
+        longrangeweightscale = 0.001
+        excitatoryweightscale = .1
+        excitatoryweightoffset = 0.0        
+        echo Finished: setting weight offsets and scales at {getdate}
+        include sean_netdefs.g
+        echo Finished: include sean_netdefs.g at {getdate}
         barrierall
     end
     step
