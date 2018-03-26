@@ -6,6 +6,8 @@ float dt = 5.0e-5		// sec
 floatformat %g
 float refresh_factor = 10.0
 
+float ttest_l = 0.01
+float ttest_h = 0.01005
 // Number of CPU nodes (= same as number of cortical columns)
 int Nnodes = 4
 int sqrtNnodes = {sqrt {Nnodes}}
@@ -374,6 +376,10 @@ if ({{drawtree} == 1})
 end
 
 while({{getstat -time} < tmax})
+    if({{getstat -time} > {ttest_l}} & {{getstat -time} < {ttest_h}})
+        //include sean_netdefs.g
+        barrierall
+    end
     step
 end
 
