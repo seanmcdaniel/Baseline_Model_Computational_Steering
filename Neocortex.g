@@ -1,13 +1,13 @@
 // genesis
 
 //Overall simulation parameters
-float tmax = 5.0
+float tmax = 4
 float dt = 5.0e-5		// sec
 floatformat %g
 float refresh_factor = 10.0
 
-float ttest_l = 3
-float ttest_h = 3.00005
+float ttest_l = 2
+float ttest_h = 2.0001
 // Number of CPU nodes (= same as number of cortical columns)
 int Nnodes = 4
 int sqrtNnodes = {sqrt {Nnodes}}
@@ -395,16 +395,24 @@ end
 
 while({{getstat -time} < tmax})
     if({{getstat -time} > {ttest_l}} & {{getstat -time} < {ttest_h}})
-        longrangeweightscale = 0.001
-        excitatoryweightscale = .1
+        echo entering if statment
+        longrangeweightscale = 1.0 // Increasing by factor of 10
+        excitatoryweightscale = 1 // Increasing by factor of 20
+        inhibitoryweightscale = .0001 // Reducing by factor 100
         excitatoryweightoffset = 0.0        
         echo Finished: setting weight offsets and scales at {getdate}
         include sean_netdefs.g
         echo Finished: include sean_netdefs.g at {getdate}
+        check
         barrierall
     end
     step
 end
+
+// Run the sim to time tmax
+//echo Started running at {getdate}
+//randseed {{mynode} + {myrandseed} + 3}
+//step_tmax
 
 echo Finished running at {getdate}
 
