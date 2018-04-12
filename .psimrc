@@ -5,12 +5,12 @@
 //      SIMPATH - path to search for scripts (includes the startup path)
 //      SIMNOTES - default file for simulator notes
 //===========================================================================
-setenv SIMPATH	. /home/mcdaniel/Software/genesis-2.4/pgenesis/startup \
-		/home/mcdaniel/Software/genesis-2.4/genesis/startup		\
-		/home/mcdaniel/Software/genesis-2.4/genesis/Scripts/neurokit   \
-		/home/mcdaniel/Software/genesis-2.4/genesis/Scripts/neurokit/prototypes
+setenv SIMPATH	. /home/seanmcd/Software/GENESIS/pgenesis/startup \
+		/home/seanmcd/Software/GENESIS/pgenesis/startup		\
+		/home/seanmcd/Software/GENESIS/genesis/Scripts/neurokit   \
+		/home/seanmcd/Software/GENESIS/genesis/Scripts/neurokit/prototypes
 setenv SIMNOTES {getenv HOME}/.notes
-setenv GENESIS_HELP /home/mcdaniel/Software/genesis-2.4/genesis/Doc
+setenv GENESIS_HELP /home/seanmcd/Software/GENESIS/genesis/Doc
 
 //===========================================================================
 //                             set up tables 
@@ -19,4 +19,4 @@ pschedule			// default simulation schedule
 
 // See /home/mcdaniel/Software/genesis-2.4/genesis/startup/escapelist.g for macro definitions.  These allow
 // you to use cursor keys for the recall and editting of previous commands
-include          escapelist      // setup macro keys for DEC and SUN keyboards
+// include          escapelist      // setup macro keys for DEC and SUN keyboards

@@ -4,7 +4,7 @@ date
 # Checking output paths
 #mydir="`dirname "$0"`"
 #mydir="`pwd | sed 's/\/home/\/barleyhome/'`"
-mydir=/home/mcdaniel/Software/Baseline_Model_Computational_Steering
+mydir=$PWD
 mydirwithtime="$mydir/data-`date "+%Y%m%d-%H%M%S.%N" | cut -b1-19`"
 rm "$mydir/data-nextlatest"
 cp -P "$mydir/data-latest" "$mydir/data-nextlatest" 
@@ -40,7 +40,7 @@ fi
 mkdir "$mydir/data-latest/scripts"
 tar c -T - < gitfiles.txt | tar x -C "${mydirwithtime}/scripts"
 
-/home/mcdaniel/Software/genesis-2.4/pgenesis/bin/pgenesis -nox -notty -batch $mydir/Neocortex >> "$logfile" 2>&1
+/home/seanmcd/Software/GENESIS/pgenesis/bin/pgenesis -nox -notty -batch $mydir/Neocortex >> "$logfile" 2>&1
 
 mv "$mydir/data/connections/"* "$mydirwithtime/connections/" 2>/dev/null
 

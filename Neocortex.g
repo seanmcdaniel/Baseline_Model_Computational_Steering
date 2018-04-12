@@ -1,15 +1,19 @@
 // genesis
+// Steering parameters
+float ttest_l = 2
+float ttest_h = 2.0001
+
+int runmode = 0
 
 //Overall simulation parameters
-float tmax = 4
+float tmax = 2
 float dt = 5.0e-5		// sec
 floatformat %g
 float refresh_factor = 10.0
 
-float ttest_l = 2
-float ttest_h = 2.0001
+
 // Number of CPU nodes (= same as number of cortical columns)
-int Nnodes = 4
+int Nnodes = 16
 int sqrtNnodes = {sqrt {Nnodes}}
 
 // Number of minicolumns per cortical column.
@@ -393,26 +397,36 @@ if ({{drawtree} == 1})
     include draw_tree.g
 end
 
-while({{getstat -time} < tmax})
-    if({{getstat -time} > {ttest_l}} & {{getstat -time} < {ttest_h}})
-        echo entering if statment
-        longrangeweightscale = 1.0 // Increasing by factor of 10
-        excitatoryweightscale = 1 // Increasing by factor of 20
-        inhibitoryweightscale = .0001 // Reducing by factor 100
-        excitatoryweightoffset = 0.0        
-        echo Finished: setting weight offsets and scales at {getdate}
-        include sean_netdefs.g
-        echo Finished: include sean_netdefs.g at {getdate}
-        check
-        barrierall
+if ({{runmode} == 1})
+    if({mynode} == 0)
+        echo Running in steering mode
     end
-    step
+    while({{getstat -time} < tmax})
+        if({{getstat -time} > {ttest_l}} & {{getstat -time} < {ttest_h}})
+            echo entering if statment
+            longrangeweightscale = 1.0 // Increasing by factor of 10
+            excitatoryweightscale = 1 // Increasing by factor of 20
+            inhibitoryweightscale = .0001 // Reducing by factor 100
+            excitatoryweightoffset = 0.0        
+            echo Finished: setting weight offsets and scales at {getdate}
+            include sean_netdefs.g
+            echo Finished: include sean_netdefs.g at {getdate}
+            check
+            barrierall
+       end
+       step
+   end
+else
+// Run the sim to time tmax
+if({mynode} == 0)
+    echo Running in nonsteering mode
+end
+echo Started running at {getdate}
+randseed {{mynode} + {myrandseed} + 3}
+step_tmax
 end
 
-// Run the sim to time tmax
-//echo Started running at {getdate}
-//randseed {{mynode} + {myrandseed} + 3}
-//step_tmax
+
 
 echo Finished running at {getdate}
 
